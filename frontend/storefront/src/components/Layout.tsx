@@ -160,7 +160,7 @@ function Footer() {
         </nav>
       </div>
       <div className={`container ${styles.footerBottom}`}>
-        <span>© {new Date().getFullYear()} Fruchi</span>
+        <span>© {new Date().getFullYear()} Fruchi · blue/green on GKE</span>
         <Link to="/privacy">Політика конфіденційності</Link>
       </div>
     </footer>
