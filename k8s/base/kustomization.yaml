@@ -4,35 +4,35 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: fruchi
 resources:
-  - configmap.yaml
-  - postgres.yaml
-  - minio.yaml
-  - jobs.yaml
-  - backend.yaml
-  - worker.yaml
-  - admin.yaml
+- configmap.yaml
+- postgres.yaml
+- minio.yaml
+- jobs.yaml
+- backend.yaml
+- worker.yaml
+- admin.yaml
 images:
-  - name: fruchi-backend
-    newName: ghcr.io/akryzhanovskiy/fruchi-backend
-    newTag: latest
-  - name: fruchi-admin
-    newName: ghcr.io/akryzhanovskiy/fruchi-admin
-    newTag: latest
-patches:
+- name: fruchi-admin
+  newName: ghcr.io/akryzhanovskiy/fruchi-admin
+  newTag: 3ce77aa2ef4c70fd4330b94915b720e322ae93b1
+- name: fruchi-backend
+  newName: ghcr.io/akryzhanovskiy/fruchi-backend
+  newTag: 3ce77aa2ef4c70fd4330b94915b720e322ae93b1
   # Deployments start after the migrate / storage-init hooks (wave 1).
-  - target:
-      kind: Deployment
-    patch: |-
-      - op: add
-        path: /metadata/annotations
-        value:
-          argocd.argoproj.io/sync-wave: "2"
   # dhi.io requires authentication: secret dhi-pull is created manually.
-  - target:
-      kind: StatefulSet
-      name: minio
-    patch: |-
-      - op: add
-        path: /spec/template/spec/imagePullSecrets
-        value:
-          - name: dhi-pull
+patches:
+- patch: |-
+    - op: add
+      path: /metadata/annotations
+      value:
+        argocd.argoproj.io/sync-wave: "2"
+  target:
+    kind: Deployment
+- patch: |-
+    - op: add
+      path: /spec/template/spec/imagePullSecrets
+      value:
+        - name: dhi-pull
+  target:
+    kind: StatefulSet
+    name: minio
