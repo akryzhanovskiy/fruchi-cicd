@@ -10,7 +10,7 @@ spec:
   type: LoadBalancer
   selector:
     app: storefront
-    color: blue
+    color: green
   ports:
     - name: http
       port: 80
