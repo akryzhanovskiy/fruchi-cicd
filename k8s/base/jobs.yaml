@@ -1,8 +1,14 @@
+# ArgoCD hooks: re-created on every sync (Job spec is immutable), after
+# PostgreSQL/MinIO (wave 0) and before the Deployments (wave 2).
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: migrate
   namespace: fruchi
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   backoffLimit: 6
   template:
@@ -29,6 +35,10 @@ kind: Job
 metadata:
   name: storage-init
   namespace: fruchi
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   backoffLimit: 6
   template:
