@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+# Order confirmation pages are personal.
+Disallow: /order/
+Disallow: /api/
+# The storefront loads products in the browser; Google renders pages with JS and needs these.
+Allow: /api/v1/products
+Allow: /api/v1/categories
+
+Sitemap: https://fruchi.com.ua/sitemap.xml

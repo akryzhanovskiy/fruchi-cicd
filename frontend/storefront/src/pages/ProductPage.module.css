@@ -1,0 +1,398 @@
+.page {
+  position: relative;
+  padding-top: 24px;
+  /* Room before the footer when there is no "Інші смаки" block. */
+  padding-bottom: clamp(56px, 7vw, 96px);
+}
+
+/* The "Інші смаки" block brings its own spacing. */
+.page:has(.more) {
+  padding-bottom: 0;
+}
+
+.state {
+  /* Keeps the footer below the fold while a product loads on a direct visit. */
+  min-height: 70vh;
+  padding-top: 96px;
+  padding-bottom: 96px;
+  color: var(--color-text-muted);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin: -6px 0 18px -12px;
+  padding: 0 16px 0 10px;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.back:hover {
+  background: var(--color-sand);
+}
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 56px;
+}
+
+/* Gallery */
+
+.gallery {
+  flex: 1 1 460px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  border-radius: 32px;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.mainImage {
+  flex: 0 0 100%;
+  aspect-ratio: 1 / 1;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.thumb {
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 3px solid transparent;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--color-sand);
+  cursor: pointer;
+}
+
+.thumb[aria-pressed='true'] {
+  border-color: var(--color-apple);
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dots {
+  display: none;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: #d9a99c;
+  cursor: pointer;
+}
+
+.dots .dotActive {
+  width: 22px;
+  background: var(--color-apple);
+}
+
+/* Info */
+
+.info {
+  flex: 1 1 420px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heading h1 {
+  font: 700 clamp(36px, 4vw, 52px) / 1.05 var(--font-display);
+  color: var(--color-apple);
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 30em;
+  font-size: 18px;
+}
+
+.description p,
+.description ul,
+.detailsText p,
+.detailsText ul {
+  margin: 0;
+}
+
+.description ul,
+.detailsText ul {
+  padding-left: 1.3em;
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.price strong {
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.price span {
+  color: var(--color-text-muted);
+}
+
+.buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.cta {
+  flex: 1 1 220px;
+}
+
+.ctaPrice,
+.ctaShort {
+  display: none;
+}
+
+.note {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.details {
+  border-top: 1px solid var(--color-line);
+}
+
+.details details {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.details summary {
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 17px;
+}
+
+.detailsText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  color: var(--color-text-muted);
+}
+
+/* Other flavours */
+
+.more {
+  padding: clamp(56px, 7vw, 96px) 0;
+}
+
+.more h2 {
+  margin-bottom: 24px;
+  font: 700 32px var(--font-display);
+}
+
+.moreList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr));
+  gap: 16px;
+}
+
+.moreItem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.moreImage {
+  aspect-ratio: 1 / 1;
+  border-radius: 22px;
+}
+
+.moreName {
+  font-weight: 800;
+  font-size: 17px;
+}
+
+.morePrice {
+  margin-top: -8px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+/* Mobile: full-bleed image, sticky buy bar, horizontal "other flavours" strip. */
+@media (max-width: 767px) {
+  .page {
+    padding-top: 0;
+  }
+
+  /* Round back button over the full-bleed product image. */
+  .back {
+    position: absolute;
+    z-index: 2;
+    top: 12px;
+    left: var(--gutter);
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    background: rgba(253, 243, 234, 0.9);
+    box-shadow: 0 2px 8px rgba(58, 36, 22, 0.12);
+  }
+
+  .backText {
+    display: none;
+  }
+
+  .main {
+    gap: 24px;
+  }
+
+  .gallery {
+    flex: 1 1 100%;
+    margin: 0 calc(-1 * var(--gutter));
+  }
+
+  .track {
+    border-radius: 0 0 36px 36px;
+  }
+
+  .mainImage {
+    aspect-ratio: auto;
+    height: 330px;
+  }
+
+  .mainImage > div {
+    width: 230px !important;
+  }
+
+  .thumbs {
+    display: none;
+  }
+
+  .dots {
+    display: flex;
+  }
+
+  .info {
+    flex: 1 1 100%;
+    gap: 20px;
+  }
+
+  .heading h1 {
+    font-size: 32px;
+    line-height: 1.1;
+  }
+
+  .description {
+    font-size: 17px;
+  }
+
+  .price strong {
+    font-size: 28px;
+  }
+
+  .buy {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 15;
+    flex-wrap: nowrap;
+    padding: 12px 16px 20px;
+    background: var(--color-cream);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .buy > :first-child:not(button) {
+    flex: none;
+  }
+
+  .cta {
+    flex: 1;
+    min-width: 0;
+    justify-content: space-between;
+    min-height: 52px;
+    padding: 0 22px;
+  }
+
+  .ctaPrice,
+  .ctaShort {
+    display: inline;
+  }
+
+  .ctaLong {
+    display: none;
+  }
+
+  .note {
+    display: none;
+  }
+
+  .more {
+    padding: 24px 0 120px;
+  }
+
+  .more h2 {
+    margin-bottom: 14px;
+    font-size: 22px;
+  }
+
+  .moreList {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    margin: 0 calc(-1 * var(--gutter));
+    padding: 0 var(--gutter) 6px;
+  }
+
+  .moreItem {
+    flex: none;
+    width: 128px;
+    gap: 6px;
+  }
+
+  .moreImage {
+    border-radius: 20px;
+  }
+}

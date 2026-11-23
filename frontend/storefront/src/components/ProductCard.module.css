@@ -1,0 +1,160 @@
+.card {
+  background: #fffaf4;
+  border: 1px solid var(--color-line);
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mediaLink {
+  position: relative;
+  display: block;
+}
+
+.media {
+  aspect-ratio: 4 / 3;
+}
+
+.badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-text);
+  color: var(--color-cream);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.body {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+}
+
+.name {
+  font: var(--text-h3);
+}
+
+.name a {
+  text-decoration: none;
+}
+
+.desc {
+  margin: 0;
+  font-size: 16px;
+  color: var(--color-text-muted);
+  flex-grow: 1;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.price strong {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.price span {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.action {
+  padding: 0 20px;
+}
+
+.stepper {
+  flex: none;
+}
+
+.mobileOnly {
+  display: none;
+}
+
+/* Two-column compact cards on phones, as in the mobile design. */
+@media (max-width: 767px) {
+  .card {
+    border-radius: 20px;
+  }
+
+  .media {
+    aspect-ratio: 1 / 1;
+  }
+
+  .body {
+    padding: 12px 12px 12px 14px;
+    gap: 6px;
+  }
+
+  .name {
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .desc {
+    display: none;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    margin-top: 0;
+    gap: 6px;
+  }
+
+  /* No room next to the price on a narrow card: the counter takes its own row. */
+  .stepper {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .price {
+    flex-direction: column;
+    gap: 0;
+    line-height: 1.2;
+  }
+
+  .price strong {
+    font-size: 17px;
+  }
+
+  .price span {
+    font-size: 13px;
+  }
+
+  .action {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 12px;
+  }
+
+  .desktopOnly {
+    display: none;
+  }
+
+  .mobileOnly {
+    display: block;
+  }
+
+  .badge {
+    top: 10px;
+    left: 10px;
+    font-size: 12px;
+  }
+}

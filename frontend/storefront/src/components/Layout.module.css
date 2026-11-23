@@ -1,0 +1,268 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--color-cream);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.headerInner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 32px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.brandName {
+  font: 700 30px/1 var(--font-display);
+  color: var(--color-apple);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 4px 28px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.nav a {
+  text-decoration: none;
+  padding: 10px 0;
+}
+
+.nav a:hover {
+  color: var(--color-apple);
+}
+
+.navSocial {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social:hover {
+  background: var(--color-sand);
+}
+
+.cartButton {
+  margin-left: 8px;
+  height: var(--control-height);
+  padding: 0 20px 0 16px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-apple);
+  color: var(--color-cream);
+  font: 800 16px var(--font-body);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.cartCount {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-cream);
+  color: var(--color-apple);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menuButton,
+.cartIcon {
+  display: none;
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cartBadge {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--color-apple);
+  color: var(--color-cream);
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1023px) {
+  .social {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .headerInner {
+    height: 64px;
+    padding: 0 8px;
+  }
+
+  .brandName {
+    font-size: 25px;
+  }
+
+  .brand svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .menuButton,
+  .cartIcon {
+    display: flex;
+  }
+
+  .cartButton {
+    display: none;
+  }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px 20px 24px;
+    background: var(--color-cream);
+    border-bottom: 1px solid var(--color-line);
+    font: 700 24px var(--font-display);
+  }
+
+  .navOpen {
+    display: flex;
+  }
+
+  .nav > a {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .navSocial {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    font: 16px var(--font-body);
+  }
+
+  .nav .navSocial a {
+    padding: 0 20px;
+  }
+}
+
+/* Footer */
+
+.footer {
+  background: var(--color-text);
+  color: #e5cdb4;
+  font-size: 15px;
+}
+
+.footerTop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+  padding-top: 56px;
+  padding-bottom: 40px;
+}
+
+.footerBrand {
+  flex: 1 1 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footerBrand p {
+  margin: 0;
+  max-width: 22em;
+}
+
+.footerName {
+  font: 700 28px var(--font-display);
+  color: var(--color-cream);
+}
+
+.footerNav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footerNav span {
+  font-weight: 800;
+  color: var(--color-cream);
+  margin-bottom: 4px;
+}
+
+.footerNav a {
+  color: #e5cdb4;
+  text-decoration: none;
+}
+
+.footerBottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 20px;
+  padding-bottom: 32px;
+  border-top: 1px solid #5a3b27;
+  font-size: 14px;
+  color: #d9bfa4;
+}
+
+.footerBottom a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* No underline in the footer; hover brightens the link instead. */
+.footerNav a:hover,
+.footerBottom a:hover {
+  color: var(--color-cream);
+}

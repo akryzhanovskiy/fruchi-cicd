@@ -1,0 +1,27 @@
+# Env
+.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+test-results/
+playwright-report/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Kubernetes secrets
+k8s/secret.yaml

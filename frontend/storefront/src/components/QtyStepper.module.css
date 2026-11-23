@@ -1,0 +1,74 @@
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: #fffaf4;
+}
+
+.stepper button {
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.stepper button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.stepper span {
+  text-align: center;
+  font-weight: 800;
+}
+
+.lg {
+  height: 56px;
+}
+
+.lg button {
+  width: 52px;
+  height: 52px;
+}
+
+.lg span {
+  min-width: 32px;
+  font-size: 18px;
+}
+
+.md {
+  height: 52px;
+}
+
+.md button {
+  width: 44px;
+  height: 48px;
+}
+
+.md span {
+  min-width: 22px;
+  font-size: 17px;
+}
+
+/* Compact variant for catalog cards: same height as the "У кошик" button. */
+.sm {
+  height: var(--control-height);
+  border-color: var(--color-leaf);
+  background: #eaf1e2;
+}
+
+.sm button {
+  width: 40px;
+  height: 44px;
+  color: var(--color-leaf);
+}
+
+.sm span {
+  min-width: 24px;
+  font-size: 17px;
+  color: var(--color-leaf);
+}

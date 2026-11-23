@@ -1,0 +1,43 @@
+/* Design tokens from the "Стиль і компоненти" board. */
+:root {
+  /* Brand */
+  --color-apple: #b3322a;
+  --color-leaf: #2f6b2c;
+  --color-text: #3a2416;
+  --color-text-muted: #6b4a35;
+  --color-cream: #fdf3ea;
+  --color-sand: #f3e1cf;
+  --color-pulp: #fbe3bc;
+  --color-line: #ebd3bc;
+
+  /* Flavour backgrounds (product accent_color picks one of these) */
+  --flavour-apple: #f7dcd3;
+  --flavour-pear: #e8edc9;
+  --flavour-banana: #f8ecc4;
+  --flavour-orange: #fbdcc2;
+  --flavour-lemon: #f6f0be;
+  --flavour-pineapple: #fae3ae;
+
+  /* Typography */
+  --font-display: 'Montserrat Alternates', 'Century Gothic', sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+  --text-h1: 700 88px/90px var(--font-display);
+  --text-h2: 700 48px/53px var(--font-display);
+  --text-h3: 700 23px/28px var(--font-display);
+  --text-body: 400 17px/26px var(--font-body);
+
+  /* Shape */
+  --radius-pill: 999px;
+  --radius-card: 28px;
+  --control-height: 48px;
+  --container: 1200px;
+  --gutter: 24px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --text-h1: 700 44px/48px var(--font-display);
+    --text-h2: 700 32px/36px var(--font-display);
+    --gutter: 16px;
+  }
+}

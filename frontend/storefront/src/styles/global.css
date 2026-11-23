@@ -1,0 +1,205 @@
+@import '@fontsource/nunito/400.css';
+@import '@fontsource/nunito/700.css';
+@import '@fontsource/nunito/800.css';
+@import '@fontsource/montserrat-alternates/500.css';
+@import '@fontsource/montserrat-alternates/700.css';
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-cream);
+  color: var(--color-text);
+  font: var(--text-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  color: var(--color-text);
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-leaf);
+  outline-offset: 2px;
+}
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* Buttons: everything clickable is fully rounded, min height 48px (design system). */
+.btn {
+  min-height: var(--control-height);
+  padding: 0 24px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  font: 800 16px var(--font-body);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+}
+
+.btn:disabled:not(.btn-soldout) {
+  opacity: 0.45;
+}
+
+.btn-lg {
+  min-height: 56px;
+  padding: 0 30px;
+  font-size: 17px;
+}
+
+.btn-primary {
+  background: var(--color-apple);
+  color: var(--color-cream);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #9a2a23;
+}
+
+.btn-outline {
+  border-color: var(--color-apple);
+  color: var(--color-apple);
+  background: transparent;
+}
+
+.btn-added {
+  border-color: var(--color-leaf);
+  background: #eaf1e2;
+  color: var(--color-leaf);
+}
+
+.btn-soldout,
+.btn-soldout:disabled {
+  background: var(--color-sand);
+  color: var(--color-text-muted);
+}
+
+.btn-dark {
+  background: var(--color-text);
+  color: var(--color-cream);
+}
+
+.btn-outline-dark {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+
+.section-title {
+  margin: 0;
+  font: 700 clamp(32px, 3.6vw, 48px) / 1.1 var(--font-display);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Keep anchor targets (/#catalog, /#delivery…) clear of the sticky header. */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
+/* --- Motion: tactile press on every button, plus small "added to cart" accents. --- */
+.btn {
+  transition:
+    transform 0.12s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+@keyframes fruchi-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fruchi-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fruchi-draw {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Re-triggered from code (see useBump) when something lands in the cart. */
+.anim-pop {
+  animation: fruchi-pop 0.4s ease;
+}
+
+.anim-appear {
+  animation: fruchi-appear 0.22s ease-out;
+}
+
+/* Checkmark that draws itself. */
+.anim-check path {
+  stroke-dasharray: 24;
+  animation: fruchi-draw 0.35s 0.05s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn:active:not(:disabled) {
+    transition: none;
+    transform: none;
+  }
+
+  .anim-pop,
+  .anim-appear,
+  .anim-check path {
+    animation: none;
+  }
+}
