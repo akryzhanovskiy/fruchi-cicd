@@ -33,6 +33,11 @@ patches:
       path: /spec/template/spec/imagePullSecrets
       value:
         - name: dhi-pull
+    - op: add
+      path: /spec/template/spec/securityContext
+      value:
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
   target:
     kind: StatefulSet
     name: minio
