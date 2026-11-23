@@ -1,0 +1,20 @@
+# The single entry point of the blue/green pair: the CD workflow switches
+apiVersion: v1
+kind: Service
+metadata:
+  name: storefront
+  namespace: fruchi
+  labels:
+    app: storefront
+spec:
+  type: LoadBalancer
+  selector:
+    app: storefront
+    color: blue
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: internal
+      port: 8080
+      targetPort: http

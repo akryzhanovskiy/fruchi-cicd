@@ -1,0 +1,160 @@
+name: Blue/Green CI/CD (storefront)
+
+# CI: unit tests -> build & push the storefront image to GHCR.
+# CD: deploy the idle color, smoke-test it, switch the Service selector,
+#     scale the old color down, commit updated k8s/storefront/ manifests to git.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/storefront/**"
+      - "frontend/packages/**"
+      - ".github/workflows/bluegreen.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "frontend/storefront/**"
+      - "frontend/packages/**"
+      - ".github/workflows/bluegreen.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+# Never run two blue/green switches at the same time.
+concurrency:
+  group: bluegreen-storefront
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/fruchi-storefront
+  GKE_CLUSTER: fruchi
+  GKE_LOCATION: europe-central2
+  NAMESPACE: fruchi
+
+jobs:
+  test:
+    name: Unit tests (storefront)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm test -w storefront
+
+  build:
+    name: Build & push image
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stamp version (served as /version.txt)
+        run: echo "${GITHUB_SHA}" > frontend/storefront/public/version.txt
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        if: github.event_name != 'pull_request'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: frontend
+          build-args: APP=storefront
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ env.IMAGE }}:${{ github.sha }}
+          cache-from: type=gha,scope=fruchi-storefront
+          cache-to: type=gha,mode=max,scope=fruchi-storefront
+
+  deploy:
+    name: Blue/green deploy to GKE
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_LOCATION }}
+
+      - name: Detect active color
+        run: |
+          ACTIVE=$(kubectl -n "$NAMESPACE" get service storefront -o jsonpath='{.spec.selector.color}' 2>/dev/null || true)
+          if [ "$ACTIVE" = "blue" ]; then NEW=green; else NEW=blue; fi
+          echo "Active: ${ACTIVE:-none} -> deploying to: $NEW"
+          echo "ACTIVE=$ACTIVE" >> "$GITHUB_ENV"
+          echo "NEW=$NEW" >> "$GITHUB_ENV"
+
+      - name: Deploy new version to the idle color
+        run: |
+          export NEW_IMAGE="$IMAGE:$GITHUB_SHA"
+          yq -i '.spec.template.spec.containers[0].image = strenv(NEW_IMAGE) | .spec.replicas = 2' "k8s/storefront/deployment-$NEW.yaml"
+          kubectl apply -f "k8s/storefront/deployment-$NEW.yaml"
+          kubectl -n "$NAMESPACE" rollout status "deployment/storefront-$NEW" --timeout=5m
+
+      - name: Smoke test the new color (before it gets traffic)
+        run: |
+          POD="deployment/storefront-$NEW"
+          kubectl -n "$NAMESPACE" exec "$POD" -- wget -qO- http://127.0.0.1:8080/version.txt | grep -qx "$GITHUB_SHA"
+          kubectl -n "$NAMESPACE" exec "$POD" -- wget -qO- http://127.0.0.1:8080/api/v1/status | grep -q '"database":true'
+          kubectl -n "$NAMESPACE" exec "$POD" -- wget -qO- http://127.0.0.1:8080/ | grep -qi '<html'
+          echo "Smoke tests passed for $NEW"
+
+      - name: Switch traffic to the new color
+        id: switch
+        run: |
+          yq -i '.spec.selector.color = strenv(NEW)' k8s/storefront/service.yaml
+          kubectl apply -f k8s/storefront/service.yaml
+          kubectl -n "$NAMESPACE" get service storefront -o wide
+
+      - name: Verify through the Service
+        run: |
+          for i in $(seq 1 12); do
+            if kubectl -n "$NAMESPACE" exec "deployment/storefront-$NEW" -- \
+                 wget -qO- http://storefront.fruchi.svc.cluster.local:8080/version.txt | grep -qx "$GITHUB_SHA"; then
+              echo "Service now serves $GITHUB_SHA ($NEW)"; exit 0
+            fi
+            sleep 5
+          done
+          echo "Service does not serve the new version"; exit 1
+
+      - name: Shut down the old color
+        id: shutdown
+        if: env.ACTIVE != ''
+        run: |
+          yq -i '.spec.replicas = 0' "k8s/storefront/deployment-$ACTIVE.yaml"
+          kubectl -n "$NAMESPACE" scale "deployment/storefront-$ACTIVE" --replicas=0
+
+      - name: Commit updated manifests to git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add k8s/storefront
+          git commit -m "deploy(blue-green): storefront ${GITHUB_SHA::7} -> ${NEW}"
+          git pull --rebase origin ${{ github.ref_name }}
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Roll back on failure
+        if: failure() && steps.shutdown.outcome != 'success'
+        run: |
+          if [ -n "$ACTIVE" ] && [ "${{ steps.switch.outcome }}" != "skipped" ]; then
+            kubectl -n "$NAMESPACE" patch service storefront -p "{\"spec\":{\"selector\":{\"app\":\"storefront\",\"color\":\"$ACTIVE\"}}}"
+            echo "Traffic returned to $ACTIVE"
+          fi
+          kubectl -n "$NAMESPACE" scale "deployment/storefront-$NEW" --replicas=0 || true
